@@ -1,117 +1,161 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Anime Streaming</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      display: flex;
-      background: #1c1c1c;
-      color: white;
-    }
-
-    /* Sidebar (liste épisodes) */
-    .sidebar {
-      width: 250px;
-      background: #2c2c2c;
-      padding: 15px;
-      overflow-y: auto;
-      height: 100vh;
-    }
-
-    .sidebar h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-
-    .episode {
-      padding: 10px;
-      margin: 5px 0;
-      background: #3a3a3a;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .episode:hover {
-      background: #505050;
-    }
-
-    /* Lecteur vidéo */
-    .content {
-      flex-grow: 1;
-      padding: 20px;
-      text-align: center;
-    }
-
-    iframe {
-      width: 80%;
-      height: 500px;
-      border: none;
-      border-radius: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Player</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+        }
+        
+        .player {
+            width: 100%;
+            height: 80vh;
+            background: #111;
+            margin-bottom: 20px;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: #333;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 15px 25px;
+            margin: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #555;
+        }
+        
+        button:disabled {
+            background: #111;
+            color: #666;
+        }
+        
+        .info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .episodes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .ep-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 20px 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .ep-btn:hover, .ep-btn.current {
+            background: #0066cc;
+        }
+        
+        @media (max-width: 600px) {
+            .episodes {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="info">
+        Épisode <span id="current">1</span> / <span id="total">8</span>
+    </div>
+    
+    <div class="player">
+        <iframe id="video" src=""></iframe>
+    </div>
+    
+    <div class="controls">
+        <button id="prev" onclick="prev()">◀ Précédent</button>
+        <button id="next" onclick="next()">Suivant ▶</button>
+    </div>
+    
+    <div class="episodes" id="episodes"></div>
 
-  <!-- Liste des épisodes -->
-  <div class="sidebar">
-    <h2>Épisodes</h2>
-    <div id="episode-list"></div>
-  </div>
-
-  <!-- Lecteur -->
-  <div class="content">
-    <h1 id="episode-title">Choisis un épisode</h1>
-    <iframe id="video-player" src="" allowfullscreen></iframe>
-  </div>
-
-  <script>
-    // Liste des épisodes (ton tableau)
-    const episodes = [
-'https://movearnpre.com/embed/fkk6z65o7u0c',
-'https://movearnpre.com/embed/geyp347gbnc8',
-'https://movearnpre.com/embed/b0rcdyauy6yg',
-'https://movearnpre.com/embed/zgtl4nc2bs3j',
-'https://movearnpre.com/embed/8bwbe0xg3uua',
-'https://movearnpre.com/embed/jnim3gcqomzn',
-'https://movearnpre.com/embed/ybmcq44ralij',
-'https://movearnpre.com/embed/lqkq26hkkery',
-'https://movearnpre.com/embed/68tfvwil9p0j',
-'https://movearnpre.com/embed/08p4ofz7d3wq',
-'https://movearnpre.com/embed/ie1693facq8m',
-'https://movearnpre.com/embed/shg6knv8jbmp',
-'https://movearnpre.com/embed/nr1evs4g6905',
-'https://movearnpre.com/embed/bkqx5marb3h0',
-'https://movearnpre.com/embed/n2qc581ablxs',
-'https://movearnpre.com/embed/zr47f086ieec',
-'https://movearnpre.com/embed/gcvg7rnu806i',
-'https://movearnpre.com/embed/msv0zzubuo7l',
-
-    ];
-
-    const episodeList = document.getElementById("episode-list");
-    const videoPlayer = document.getElementById("video-player");
-    const episodeTitle = document.getElementById("episode-title");
-
-    // Générer la liste des épisodes
-    episodes.forEach((url, index) => {
-      const ep = document.createElement("div");
-      ep.classList.add("episode");
-      ep.textContent = "Épisode " + (index + 1);
-      ep.onclick = () => {
-        videoPlayer.src = url;
-        episodeTitle.textContent = "Épisode " + (index + 1);
-      };
-      episodeList.appendChild(ep);
-    });
-  </script>
-
+    <script>
+        const urls = [
+            'https://video.sibnet.ru/shell.php?videoid=4812191',
+            'https://video.sibnet.ru/shell.php?videoid=4812192',
+            'https://video.sibnet.ru/shell.php?videoid=4812194',
+            'https://video.sibnet.ru/shell.php?videoid=4812197',
+            'https://video.sibnet.ru/shell.php?videoid=4812201',
+            'https://video.sibnet.ru/shell.php?videoid=4812203',
+            'https://video.sibnet.ru/shell.php?videoid=4812212',
+            'https://video.sibnet.ru/shell.php?videoid=4812214'
+        ];
+        
+        let current = 0;
+        
+        function load(n) {
+            current = n;
+            document.getElementById('video').src = urls[n];
+            document.getElementById('current').textContent = n + 1;
+            
+            // Update buttons
+            document.getElementById('prev').disabled = n === 0;
+            document.getElementById('next').disabled = n === urls.length - 1;
+            
+            // Update episode buttons
+            const btns = document.querySelectorAll('.ep-btn');
+            btns.forEach((btn, i) => {
+                btn.className = i === n ? 'ep-btn current' : 'ep-btn';
+            });
+        }
+        
+        function prev() {
+            if (current > 0) load(current - 1);
+        }
+        
+        function next() {
+            if (current < urls.length - 1) load(current + 1);
+        }
+        
+        // Create episode buttons
+        const container = document.getElementById('episodes');
+        urls.forEach((url, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'ep-btn';
+            btn.textContent = 'Ép. ' + (i + 1);
+            btn.onclick = () => load(i);
+            container.appendChild(btn);
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prev();
+            if (e.key === 'ArrowRight') next();
+        });
+        
+        // Load first episode
+        load(0);
+    </script>
 </body>
 </html>
-
-
-
-
