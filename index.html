@@ -70,159 +70,20 @@
         .video-container {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%;
             background: #000;
             border-radius: 10px;
             overflow: hidden;
         }
 
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .video-container video {
             width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-        }
-
-        .btn-prev {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-prev:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-next {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-next:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .episodes-grid {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .episodes-title {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-        }
-
-        .episodes-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 15px;
-        }
-
-        .episode-item {
-            padding: 15px;
-            background: #f8f9fa;
-            border: 2px solid transparent;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            position: relative;
-        }
-
-        .episode-item:hover {
-            transform: scale(1.05);
-            border-color: #667eea;
-            background: #e7e9fc;
-        }
-
-        .episode-item.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .episode-item.watched::after {
-            content: '✓';
-            position: absolute;
-            top: 5px;
-            right: 8px;
-            color: #28a745;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .episode-item.active.watched::after {
-            color: white;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e9ecef;
-            border-radius: 3px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s ease;
-        }
-
-        .progress-text {
-            text-align: center;
-            margin-top: 10px;
-            color: #666;
-            font-size: 0.9em;
+            height: auto;
+            display: block;
         }
 
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 1.8em;
-            }
-
-            .episodes-list {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 10px;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
             }
         }
     </style>
@@ -230,142 +91,23 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 Lecteur d'Anime</h1>
-            <p>Reprends là où tu t'es arrêté !</p>
+            <h1>Adilox</h1>
+            <p>Profite de ton épisode !</p>
         </div>
 
         <div class="player-section">
             <div class="episode-info">
                 <div class="episode-title">Épisode en cours</div>
-                <div class="episode-number">Épisode <span id="currentEpNum">1</span></div>
+                <div class="episode-number">Épisode 1</div>
             </div>
 
             <div class="video-container">
-                <iframe id="videoPlayer" allowfullscreen></iframe>
+                <video id="videoPlayer" controls>
+                    <source src="episode1.mp4" type="video/mp4">
+                    Votre navigateur ne supporte pas la lecture de vidéos.
+                </video>
             </div>
-
-            <div class="controls">
-                <button class="btn btn-prev" id="prevBtn" onclick="previousEpisode()">⬅️ Précédent</button>
-                <button class="btn btn-next" id="nextBtn" onclick="nextEpisode()">Suivant ➡️</button>
-            </div>
-        </div>
-
-        <div class="episodes-grid">
-            <h2 class="episodes-title">Liste des Épisodes</h2>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-text" id="progressText"></div>
-            <div class="episodes-list" id="episodesList"></div>
         </div>
     </div>
-
-    <script>
-        const episodes = [
-            'https://video.sibnet.ru/shell.php?videoid=5230682',
-            'https://video.sibnet.ru/shell.php?videoid=4813071',
-            'https://video.sibnet.ru/shell.php?videoid=4813073',
-            'https://video.sibnet.ru/shell.php?videoid=4813074',
-            'https://video.sibnet.ru/shell.php?videoid=4813077',
-            'https://video.sibnet.ru/shell.php?videoid=4813078',
-            'https://video.sibnet.ru/shell.php?videoid=4813080',
-            'https://video.sibnet.ru/shell.php?videoid=4813083',
-            'https://video.sibnet.ru/shell.php?videoid=4813085',
-            'https://video.sibnet.ru/shell.php?videoid=4813088',
-            'https://video.sibnet.ru/shell.php?videoid=4813090',
-            'https://video.sibnet.ru/shell.php?videoid=4813093',
-            'https://video.sibnet.ru/shell.php?videoid=4954376'
-        ];
-
-        let currentEpisode = 0;
-        let watchedEpisodes = {};
-        const STORAGE_KEY = 'animeProgress';
-
-        // Charger la progression sauvegardée
-        function loadProgress() {
-            const saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const data = JSON.parse(saved);
-                currentEpisode = data.currentEpisode || 0;
-                watchedEpisodes = data.watchedEpisodes || {};
-            }
-        }
-
-        // Sauvegarder la progression
-        function saveProgress() {
-            const data = {
-                currentEpisode: currentEpisode,
-                watchedEpisodes: watchedEpisodes
-            };
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        }
-
-        // Charger un épisode
-        function loadEpisode(index) {
-            if (index < 0 || index >= episodes.length) return;
-            
-            currentEpisode = index;
-            document.getElementById('videoPlayer').src = episodes[index];
-            document.getElementById('currentEpNum').textContent = index + 1;
-            
-            // Marquer comme vu
-            watchedEpisodes[index] = true;
-            saveProgress();
-            
-            // Mettre à jour l'interface
-            updateUI();
-        }
-
-        // Mettre à jour l'interface
-        function updateUI() {
-            // Mettre à jour les boutons
-            document.getElementById('prevBtn').disabled = currentEpisode === 0;
-            document.getElementById('nextBtn').disabled = currentEpisode === episodes.length - 1;
-            
-            // Mettre à jour la liste des épisodes
-            const episodesList = document.getElementById('episodesList');
-            episodesList.innerHTML = '';
-            
-            episodes.forEach((url, index) => {
-                const div = document.createElement('div');
-                div.className = 'episode-item';
-                if (index === currentEpisode) div.classList.add('active');
-                if (watchedEpisodes[index]) div.classList.add('watched');
-                div.textContent = `Ép ${index + 1}`;
-                div.onclick = () => loadEpisode(index);
-                episodesList.appendChild(div);
-            });
-
-            // Mettre à jour la barre de progression
-            const watchedCount = Object.keys(watchedEpisodes).length;
-            const progress = (watchedCount / episodes.length) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = 
-                `${watchedCount} / ${episodes.length} épisodes vus (${Math.round(progress)}%)`;
-        }
-
-        // Navigation
-        function nextEpisode() {
-            if (currentEpisode < episodes.length - 1) {
-                loadEpisode(currentEpisode + 1);
-            }
-        }
-
-        function previousEpisode() {
-            if (currentEpisode > 0) {
-                loadEpisode(currentEpisode - 1);
-            }
-        }
-
-        // Initialisation
-        loadProgress();
-        loadEpisode(currentEpisode);
-
-        // Sauvegarder automatiquement toutes les 30 secondes
-        setInterval(saveProgress, 30000);
-
-        // Sauvegarder avant de quitter
-        window.addEventListener('beforeunload', saveProgress);
-    </script>
 </body>
 </html>
