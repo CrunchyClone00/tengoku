@@ -70,15 +70,19 @@
         .video-container {
             position: relative;
             width: 100%;
+            padding-bottom: 56.25%;
             background: #000;
             border-radius: 10px;
             overflow: hidden;
         }
 
-        .video-container video {
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: auto;
-            display: block;
+            height: 100%;
+            border: none;
         }
 
         @media (max-width: 768px) {
@@ -102,10 +106,7 @@
             </div>
 
             <div class="video-container">
-                <video id="videoPlayer" controls>
-                    <source src="episode1.mp4" type="video/mp4">
-                    Votre navigateur ne supporte pas la lecture de vidéos.
-                </video>
+                <iframe id="videoPlayer" src="https://app.videas.fr/embed/media/2a398167-3d2a-4e73-8159-56a7372d1d73/" allowfullscreen></iframe>
             </div>
         </div>
     </div>
